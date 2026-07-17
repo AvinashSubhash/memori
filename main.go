@@ -42,6 +42,7 @@ func getDetails(call *gin.Context) {
 
 func main() {
 	println(albums)
+	ConnectDatabase()
 	router := gin.Default()
 	router.GET("/get", getDetails)
 	router.POST("/create", createTopic)
