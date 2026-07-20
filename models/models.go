@@ -8,6 +8,7 @@ import (
 
 type Topic struct {
 	gorm.Model
+	TopicID          uint      `json:"topic_id" gorm:"not null; autoIncrement"`
 	Name             string    `json:"name"`
 	Description      string    `json:"description,omitempty"`
 	CurrentInterval  int       `json:"current_interval"`
