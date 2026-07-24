@@ -41,9 +41,12 @@ func ConnectDatabase() {
 	DB = db
 	err = db.AutoMigrate(&models.Topic{})
 	if err != nil {
-		fmt.Println("Unable to Migrate Database")
+		fmt.Println("Unable to Migrate Database for Table: Topics")
 	}
-	//response := db.Ping()
-	//fmt.Println(response)
+
+	err = db.AutoMigrate(&models.RevisionLog{})
+	if err != nil {
+		fmt.Println("Unable to Migrate Database for Table: Revision Logs")
+	}
 	fmt.Println("Database connection established")
 }
