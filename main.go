@@ -19,10 +19,8 @@ func createTopic(c *gin.Context) {
 		return
 	}
 
-	var topicInterval int = 1
-	var topicStatus string = "incomplete"
-	println(request.Description, topicInterval, request.Name, topicStatus)
-	// Feeder function to pass to database - Not Ready
+	println(request.Description, request.Name)
+	insertTopic(request.Name, request.Description)
 	c.JSON(http.StatusOK, gin.H{"message": "success"})
 }
 
