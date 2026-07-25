@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -21,6 +23,18 @@ func createTopic(c *gin.Context) {
 
 	println(request.Description, request.Name)
 	insertTopic(request.Name, request.Description)
+	c.JSON(http.StatusOK, gin.H{"message": "success"})
+}
+
+func initUpdateTopic(c *gin.Context) {
+	update_id := c.Param("id")
+	fmt.Println(update_id)
+	result, err := strconv.Atoi(update_id)
+	if err != nil {
+		fmt.Println("Error converting id to integer!")
+		return
+	}
+	updateTopic(uint(result))
 	c.JSON(http.StatusOK, gin.H{"message": "success"})
 }
 
@@ -44,5 +58,6 @@ func main() {
 	router := gin.Default()
 	router.GET("/get", getDetails)
 	router.POST("/create", createTopic)
+	router.PUT("/update/:id", initUpdateTopic)
 	router.Run("localhost:8080")
 }

@@ -16,3 +16,13 @@ func insertTopic(name string, description string) {
 	}
 	fmt.Println("New topic inserted.")
 }
+
+func updateTopic(id uint) {
+	fmt.Println("Updating topic.")
+	result := DB.Model(&models.Topic{}).Where("id = ?", id).Updates(models.Topic{CurrentInterval: 0, NextRevisionDate: time.Now()})
+	if result.Error != nil {
+		fmt.Println("Error updating data: ", result.Error)
+		return
+	}
+	fmt.Println("Data updated successfully.")
+}
