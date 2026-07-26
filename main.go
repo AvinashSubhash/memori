@@ -38,6 +38,18 @@ func initUpdateTopic(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "success"})
 }
 
+func initIncrementTopic(c *gin.Context) {
+	increment_id := c.Param("id")
+	fmt.Println(increment_id)
+	result, err := strconv.Atoi(increment_id)
+	if err != nil {
+		fmt.Println("Error converting id to integer!")
+		return
+	}
+	incrementTopic(uint(result))
+	c.JSON(http.StatusOK, gin.H{"message": "success"})
+}
+
 type album struct {
 	ID   string `json:"id"`
 	Name string `json:"name"`
@@ -59,5 +71,6 @@ func main() {
 	router.GET("/get", getDetails)
 	router.POST("/create", createTopic)
 	router.PUT("/update/:id", initUpdateTopic)
+	router.PUT("/increment/:id", initIncrementTopic)
 	router.Run("localhost:8080")
 }
