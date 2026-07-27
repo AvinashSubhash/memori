@@ -54,10 +54,12 @@ func incrementTopic(id uint) {
 
 func calculateNextInterval(currInterval int) int {
 	interval_map := map[int]int{
+		0:  1,
 		1:  4,
 		4:  7,
 		7:  14,
 		14: 28,
+		28: 1,
 	}
 
 	return interval_map[currInterval]
@@ -68,4 +70,15 @@ func calculateNextRevisionDate(currDate time.Time, currInterval int) (time.Time,
 	nextRevisionDate := currDate.AddDate(0, 0, nextInterval)
 	fmt.Println("Next Revision Date: ", nextRevisionDate)
 	return nextRevisionDate, nextInterval
+}
+
+func getTopicList() []models.Topic {
+	var topicsList []models.Topic
+	result := DB.Find(&topicsList)
+	if result.Error != nil {
+		fmt.Println("Error fetching all topics.", result.Error)
+		return nil
+	}
+	fmt.Println("Fetched all topics: ", len(topicsList))
+	return topicsList
 }

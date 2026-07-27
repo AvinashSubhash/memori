@@ -50,6 +50,15 @@ func initIncrementTopic(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "success"})
 }
 
+func getTopics(c *gin.Context) {
+	result := getTopicList()
+	if result == nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "error fetching topics"})
+		return
+	}
+	c.IndentedJSON(http.StatusOK, result)
+}
+
 type album struct {
 	ID   string `json:"id"`
 	Name string `json:"name"`
@@ -72,5 +81,6 @@ func main() {
 	router.POST("/create", createTopic)
 	router.PUT("/update/:id", initUpdateTopic)
 	router.PUT("/increment/:id", initIncrementTopic)
+	router.GET("/getTopics", getTopics)
 	router.Run("localhost:8080")
 }
