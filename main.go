@@ -59,6 +59,15 @@ func getTopics(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, result)
 }
 
+func getTodayRevisions(c *gin.Context) {
+	result := getTodayTopicList()
+	if result == nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "error fetching topics"})
+		return
+	}
+	c.IndentedJSON(http.StatusOK, result)
+}
+
 type album struct {
 	ID   string `json:"id"`
 	Name string `json:"name"`
@@ -77,10 +86,16 @@ func main() {
 	println(albums)
 	ConnectDatabase()
 	router := gin.Default()
+
+	// Serve static frontend files
+	router.Static("/public", "./public")
+	router.StaticFile("/", "./public/index.html")
+
 	router.GET("/get", getDetails)
 	router.POST("/create", createTopic)
 	router.PUT("/update/:id", initUpdateTopic)
 	router.PUT("/increment/:id", initIncrementTopic)
 	router.GET("/getTopics", getTopics)
+	router.GET("/revisions/today", getTodayRevisions)
 	router.Run("localhost:8080")
 }

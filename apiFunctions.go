@@ -6,9 +6,14 @@ import (
 	"time"
 )
 
+func uniformDate(date time.Time) time.Time {
+	return time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, time.UTC)
+}
+
 func insertTopic(name string, description string) {
 	fmt.Println("Inserting new topic into database.")
-	insertData := models.Topic{Name: name, Description: description, NextRevisionDate: time.Now(), CurrentInterval: 1}
+	dateOnly := uniformDate(time.Now())
+	insertData := models.Topic{Name: name, Description: description, NextRevisionDate: dateOnly, CurrentInterval: 1}
 	result := DB.Create(&insertData)
 	if result.Error != nil {
 		fmt.Println("Error creating topic:", result.Error)
@@ -19,7 +24,8 @@ func insertTopic(name string, description string) {
 
 func updateTopic(id uint) {
 	fmt.Println("Updating topic.")
-	result := DB.Model(&models.Topic{}).Where("id = ?", id).Updates(models.Topic{CurrentInterval: 0, NextRevisionDate: time.Now()})
+	dateOnly := uniformDate(time.Now())
+	result := DB.Model(&models.Topic{}).Where("id = ?", id).Updates(models.Topic{CurrentInterval: 0, NextRevisionDate: dateOnly})
 	if result.Error != nil {
 		fmt.Println("Error updating data: ", result.Error)
 		return
@@ -68,6 +74,7 @@ func calculateNextInterval(currInterval int) int {
 func calculateNextRevisionDate(currDate time.Time, currInterval int) (time.Time, int) {
 	nextInterval := calculateNextInterval(currInterval)
 	nextRevisionDate := currDate.AddDate(0, 0, nextInterval)
+	nextRevisionDate = uniformDate(nextRevisionDate)
 	fmt.Println("Next Revision Date: ", nextRevisionDate)
 	return nextRevisionDate, nextInterval
 }
@@ -75,6 +82,17 @@ func calculateNextRevisionDate(currDate time.Time, currInterval int) (time.Time,
 func getTopicList() []models.Topic {
 	var topicsList []models.Topic
 	result := DB.Find(&topicsList)
+	if result.Error != nil {
+		fmt.Println("Error fetching all topics.", result.Error)
+		return nil
+	}
+	fmt.Println("Fetched all topics: ", len(topicsList))
+	return topicsList
+}
+
+func getTodayTopicList() []models.Topic {
+	var topicsList []models.Topic
+	result := DB.Find(&topicsList, "NEXT_REVISION_DATE = ?", uniformDate(time.Now()))
 	if result.Error != nil {
 		fmt.Println("Error fetching all topics.", result.Error)
 		return nil
