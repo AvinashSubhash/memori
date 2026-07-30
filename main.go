@@ -97,5 +97,6 @@ func main() {
 	router.PUT("/increment/:id", initIncrementTopic)
 	router.GET("/getTopics", getTopics)
 	router.GET("/revisions/today", getTodayRevisions)
+	router.GET("/revisions/:date", getRevisionByDate)
 	router.Run("localhost:8080")
 }
